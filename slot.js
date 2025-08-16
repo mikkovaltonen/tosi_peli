@@ -76,12 +76,22 @@ function stopReel(ul){
 function ensureCentered(ul, targetId){
 	// Adjust to show one symbol above and one below the center winner within a taller window
 	const items = Array.from(ul.children);
+	
+	// Poista aiemmat winner-highlight luokat
+	items.forEach(li => li.classList.remove("winner-highlight"));
+	
 	let index = items.findIndex(li => (li.querySelector("img")?.dataset.id) === targetId);
 	if(index === -1) {
 		// If not found in first cycle, search in the repeated parts
 		index = items.findIndex((li, i) => i > logos.length && (li.querySelector("img")?.dataset.id) === targetId);
 		if(index === -1) return;
 	}
+	
+	// Lisää winner-highlight luokka keskirivissä olevalle logolle
+	if(items[index]) {
+		items[index].classList.add("winner-highlight");
+	}
+	
 	const itemHeight = items[0].getBoundingClientRect().height;
 	// Center the target: offset to show one above, target in middle, one below
 	const centerOffset = (index - 1) * itemHeight; // Assuming window shows 3 items
@@ -231,14 +241,18 @@ spinBtn.addEventListener("click", async () => {
 	}
 	if(playCount >= 1 && !hasSlicerChangesSinceLastPlay()){
 		console.log("Showing info for second spin without changes");
-		showInfoModal("Muuta preferenssejä jatkaaksesi", "Voit pelata toisen kerran muuttamalla vakuutuspreferenssejä.\n\nVoit myös rekisteröityä pelataksesi tosipeliä oikeilla vakuutushinnoilla.");
+		showInfoModal("Muuta preferenssejä toiselle pyöritykselle", "Saat toisen ilmaisen pyörityksen muuttamalla vähintään yhtä vakuutuspreferenssiä.\n\n💡 Kokeile eri yhdistelmiä nähdäksesi miten se vaikuttaa hintaan!\n\nVoit myös rekisteröityä pelataksesi oikeilla vakuutushinnoilla.");
 		return;
 	}
 
 	spinBtn.disabled = true;
-	resultEl.textContent = "Pyörii...";
-	resultEl.className = "result";
-	adviceEl.textContent = "";
+	if(resultEl) {
+		resultEl.textContent = "Pyörii...";
+		resultEl.className = "result";
+	}
+	if(adviceEl) {
+		adviceEl.textContent = "";
+	}
 
 	// Play spin sound
 	spinSound.play();
@@ -270,24 +284,36 @@ spinBtn.addEventListener("click", async () => {
 	if(winLineMatka){ winLineMatka.textContent = `${chosen[2].name} voitti matkavakuutuksen kilpailutuksen`; }
 
 	const outcome = evaluateOutcome(chosen);
-	resultEl.textContent = outcome.message;
-	resultEl.classList.add(outcome.type === "win" ? "win" : outcome.type === "tip" ? "tip" : "lose");
-	if(outcome.type === "win") {
-		document.querySelector('.coin-icon').classList.remove('hidden');
-	} else {
-		document.querySelector('.coin-icon').classList.add('hidden');
+	if(resultEl) {
+		resultEl.textContent = outcome.message;
+		resultEl.classList.add(outcome.type === "win" ? "win" : outcome.type === "tip" ? "tip" : "lose");
+		const coinIcon = document.querySelector('.coin-icon');
+		if(coinIcon) {
+			if(outcome.type === "win") {
+				coinIcon.classList.remove('hidden');
+			} else {
+				coinIcon.classList.add('hidden');
+			}
+		}
 	}
-	if(outcome.advice){ adviceEl.textContent = outcome.advice; }
-	if(outcome.type !== "win"){
-		adviceEl.textContent = "Et saanut valitettavasti suurta keskittämisbonusta koska sinun hajauttaminen kolmeen eri yhtiöön tuottaa säästöä.";
-	} else {
+	if(adviceEl) {
+		if(outcome.advice){ 
+			adviceEl.textContent = outcome.advice; 
+		}
+		if(outcome.type !== "win"){
+			adviceEl.textContent = "Et saanut valitettavasti suurta keskittämisbonusta koska sinun hajauttaminen kolmeen eri yhtiöön tuottaa säästöä.";
+		}
+	}
+	if(outcome.type === "win") {
 		// Play win sound on win
 		winSound.play();
 	}
-	adviceEl.textContent += " Muuta painoja simuloidaksesi kilpailutusta eri preferensseillä tai rekisteröidy palveluun tehdäksesi oikean kilpailutuksen oikeilla hinnoilla.";
+	if(adviceEl) {
+		adviceEl.textContent += " Muuta painoja simuloidaksesi kilpailutusta eri preferensseillä tai rekisteröidy palveluun tehdäksesi oikean kilpailutuksen oikeilla hinnoilla.";
+	}
 
 	// Add specific message after first spin
-	if (playCount === 0) {
+	if (playCount === 0 && adviceEl) {
 		adviceEl.textContent += " Muuta preferenssejä ja pelaa uudelleen tai rekisteröi tili ja pelaa tosipeliä oikeilla vakuutus tarjouksilla.";
 	}
 
@@ -376,9 +402,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		databaseURL: "https://insurance-vault-b5176.firebaseio.com" // Assumed based on project ID; adjust if needed
 	};
 
-	// Initialize Firebase
-	const app = firebase.initializeApp(firebaseConfig);
-	const db = firebase.firestore(app);
+	// Firebase initialization commented out - requires Firebase SDK
+	// const app = firebase.initializeApp(firebaseConfig);
+	// const db = firebase.firestore(app);
 
 	// Handle registration submit
 	const registerForm = document.getElementById("registerForm");
