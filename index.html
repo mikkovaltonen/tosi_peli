@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="fi">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>Tosi peli – Vakuutusten kilpailutus pelillistettynä</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="styles.css" />
+	<meta name="description" content="Tosi peli: pelillistetty vakuutusten kilpailutus. Säästä jopa 1000 € vuodessa yhdistämällä parhaat tarjoukset auto-, koti- ja matkavakuutuksiin." />
+	<link rel="icon" href="public/if_logo.png" />
+	<style>
+		body {
+			background-image: url('public/fruit slot.jpg');
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+		}
+	</style>
+	<script type="module" src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
+	<script type="module" src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"></script>
+	<script type="module" src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"></script>
+</head>
+<body>
+	<header class="site-header">
+		<h1 class="title">Tosi peli</h1>
+		<p class="subtitle">Pelillistetty vakuutusten kilpailutus – säästä jopa 1000 € vuodessa</p>
+		<div class="header-buttons">
+			<button id="loginBtn" class="btn-secondary">Loggaa sisään</button>
+			<button id="registerBtn" class="btn-primary">Rekisteröidy</button>
+		</div>
+	</header>
+
+	<main class="game" role="main">
+		<section class="intro">
+			<h2>Pelillistetty kilpailutus, tosi säästöt</h2>
+			<p>Tosi peli auttaa sinua kilpailuttamaan auto-, koti- ja matkavakuutukset hauskasti. Pyöräytä, näe voittajat ja yhdistä paras kokonaisuus. Säästöä jopa 1000 € vuodessa – ja jos sama yhtiö voittaa kaikki, saat suuren keskittämisbonuksen.</p>
+		</section>
+
+		<p class="preference-instruction">Valitse vakuutuspreferenssit pelataksesi peliä.</p>
+
+		<section class="filters" aria-label="Vakuutusten laajuudet">
+			<div class="filter">
+				<span class="filter-label">Autovakuutuksen laajuus</span>
+				<div class="slicer" id="slicer-auto">
+					<button type="button" class="slicer-option" data-value="liikenne">Liikenne</button>
+					<button type="button" class="slicer-option" data-value="osakasko">Osakasko</button>
+					<button type="button" class="slicer-option" data-value="tayskasko">Täyskasko</button>
+				</div>
+			</div>
+			<div class="filter">
+				<span class="filter-label">Kotivakuutuksen laajuus</span>
+				<div class="slicer" id="slicer-home">
+					<button type="button" class="slicer-option" data-value="perus">Perus</button>
+					<button type="button" class="slicer-option" data-value="laaja-mt">Laaja + matkatavarat</button>
+				</div>
+			</div>
+			<div class="filter">
+				<span class="filter-label">Matkavakuutuksen laajuus</span>
+				<div class="slicer" id="slicer-travel">
+					<button type="button" class="slicer-option" data-value="short">Vain lyhyet matkat</button>
+					<button type="button" class="slicer-option" data-value="all">laaja</button>
+				</div>
+			</div>
+		</section>
+
+		<section class="machine" aria-label="Vakuutus-slot-kone" role="region">
+			<div class="machine-container">
+				<aside class="win-label" aria-hidden="true">
+					<div class="arrow-indicator">→</div>
+					<p>Keskirivi näyttää kilpailutuksen voittajan</p>
+				</aside>
+				<div class="reels-layout">
+					<div class="reels">
+						<div class="center-line-highlight"></div>
+						<div class="reel" data-reel="auto">
+							<div class="reel-label">Autovakuutus</div>
+							<div class="window">
+								<ul class="strip" id="strip-auto" aria-live="polite"></ul>
+							</div>
+							<div class="winline" id="win-auto" aria-live="polite"></div>
+						</div>
+						<div class="reel" data-reel="koti">
+							<div class="reel-label">Kotivakuutus</div>
+							<div class="window center-window" aria-describedby="center-note">
+								<ul class="strip" id="strip-koti" aria-live="polite"></ul>
+							</div>
+							<div class="winline" id="win-koti" aria-live="polite"></div>
+						</div>
+						<div class="reel" data-reel="matka">
+							<div class="reel-label">Matkavakuutus</div>
+							<div class="window">
+								<ul class="strip" id="strip-matka" aria-live="polite"></ul>
+							</div>
+							<div class="winline" id="win-matka" aria-live="polite"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="controls">
+				<button id="spinBtn" class="btn-primary" aria-label="Pyöritä kiekkoja">
+					PYÖRITÄ
+					<span class="tooltip-icon">?</span>
+				</button>
+			</div>
+
+			<div id="result" class="result" role="status" aria-live="polite"><img src="public/coin.png" alt="Coin icon" class="coin-icon hidden" /></div>
+			<div id="advice" class="advice" aria-live="polite"></div>
+			<div class="cta-wrap"><button id="ctaRegister" class="btn-primary btn-cta hidden" type="button">Rekisteröi tietosi oikean tekoälyn suorittamaan vakuutusten kilpailutukseen ja realisoi jopa 1000 € vuosisäästöt nykyisiin vakuutushintoihin verrattuna</button></div>
+		</section>
+
+		<!-- Modals -->
+		<div id="prefModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="prefTitle">
+			<div class="modal-card">
+				<div class="modal-header">
+					<h3 id="prefTitle">Olet jo pelannut kerran</h3>
+					<button class="modal-close" data-close-modal>&times;</button>
+				</div>
+				<div class="modal-body">
+					<p>Voit pelata toisen kerran muuttamalla mieltymyksiäsi ylhäällä olevista slicereista. Vaihtoehtoisesti rekisteröidy pelataksesi tosipeliä oikeilla vakuutushinnoilla.</p>
+					<button class="btn-secondary" onclick="openRegisterModal()">Rekisteröidy tosipeliin</button>
+				</div>
+				<div class="modal-actions">
+					<button class="btn-primary" data-close-modal>OK, muutan preferenssejä</button>
+				</div>
+			</div>
+		</div>
+
+		<div id="registerModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
+			<div class="modal-card">
+				<div class="modal-header">
+					<h3 id="registerTitle">Rekisteröidy saadaksesi oikeat hinnat</h3>
+					<button class="modal-close" data-close-modal>&times;</button>
+				</div>
+				<form id="registerForm" class="modal-body">
+					<div class="form-row">
+						<label>Henkilötunnus (sotu)
+							<input id="reg-sotu" name="sotu" type="text" placeholder="010101-123A" pattern="[0-9]{6}[+\-A][0-9]{3}[0-9A-Za-z]" required />
+						</label>
+						<label>Postinumero
+							<input id="reg-zip" name="zip" type="text" placeholder="00100" pattern="[0-9]{5}" required />
+						</label>
+					</div>
+					<div class="form-row">
+						<label>Auton rekisteritunnus
+							<input id="reg-plate" name="plate" type="text" placeholder="ABC-123" required />
+						</label>
+						<label>Kodin koko (m²)
+							<input id="reg-size" name="homeSize" type="number" min="1" step="1" placeholder="80" required />
+						</label>
+					</div>
+					<div class="form-consents">
+						<label class="check"><input type="checkbox" id="consent-store" required /> Hyväksyn tietojen tallentamisen kilpailutusta varten</label>
+						<label class="check"><input type="checkbox" id="consent-marketing" /> Annan markkinointiluvan</label>
+						<label class="check"><input type="checkbox" id="consent-sale" /> Annan luvan tietojen myyntiin kumppaneille</label>
+					</div>
+					<div class="modal-actions">
+						<button type="submit" class="btn-primary">Lähetä</button>
+						<button type="button" class="btn-secondary" data-close-modal>Peruuta</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+
+
+		<section class="help">
+			<h2>Miten peli toimii?</h2>
+			<ul>
+				<li>Jokainen kela edustaa vakuutusta: Auto, Koti ja Matka.</li>
+				<li>Symbolit ovat suomalaisten vakuutusyhtiöiden logoja.</li>
+				<li>Jos sama yhtiö voittaa kaikki kolme, saat <strong>suuren keskittämisbonuksen</strong>.</li>
+				<li>Kunkin kelan keskelle pysähtyvä logo on kyseisen vakuutuslajin <strong>kilpailutuksen voittaja</strong>.</li>
+				<li>Pyöräytyksen jälkeen näytämme yhteenvedon voittajista ja kerromme, kannattaako <strong>keskittää</strong> vai <strong>hajauttaa</strong>.</li>
+			</ul>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<p>Rakennettu tulevia ominaisuuksia varten (kirjautuminen, reaali-hinnat API:lla).</p>
+	</footer>
+
+	<script src="slot.js"></script>
+</body>
+</html>
+
+
