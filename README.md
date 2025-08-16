@@ -65,7 +65,29 @@ npx http-server . -p 8080
    - Sama yhtiö kaikissa = suuri keskittämisbonus!
    - Eri yhtiöt = hajauttamalla säästät
 
+
+Uusinta eri valinnoilla
+Käyttäjä voi halutessaan ajaa pelin uudelleen eri preferenssivalinnoilla. Jos hän yrittää ajaa samoilla valinnoilla, häntä ohjataan muuttamaan valintoja.
+
+Tulokset ja tilikutsu
+Aina kun käyttäjä ajaa pelin, avataan dialogi, joka selittää, mitkä yhtiöt voittivat. Samalla käyttäjälle tarjotaan mahdollisuus luoda tili ja pelata “tosipeliä” todellisilla vakuutustarjouksilla. Jos käyttäjä päättää luoda tilin, avataan rekisteröintidialogi.
+
 4. **Rekisteröidy** tosipeliin saadaksesi oikeat hinnat
+
+Rekisteröitymisen tai kirjautumisen jälkeen
+
+Kun käyttäjä on rekisteröitynyt tai kirjautunut sisään, hänen tietonsa näytetään yläreunassa
+
+5. **Oikeiden hintojen haku**
+Tässä vaiheess pyydentään lupa hintojen hakuun 
+“Hae autovakuutustarjouksia ja kotivakuutustarjouksia.” Tarjoukset haetaan API:lla.
+
+6. **Oikeiden hintojen raakadata esitys***
+Kun tarjoukset on haettu, ne päivittyvät taulukkoon ja käyttäjän tila muuttuu muotoon “Tarjoukset saatu.”
+
+7. **Pyöritä kelloja oikeilla hinnoilla** eli tosipeli
+Nyt käyttäjä voi vertailla tarjouksia pyörittämällä peliä. Kunkin kategorian voittaja on halvin tarjous, joka sisältää halutun laajuuden. Järjestölmö laskee kokonaihinnan ja säästön keskimääräisestä ja huonoimmasta tarjouksesta. 
+
 
 ## 📁 Projektin rakenne
 
