@@ -129,9 +129,18 @@ const SlotMachine = ({ user, onRegisterClick }) => {
   };
   
   return (
-    <div className="slot-machine">
-      <div className="preferences-section">
-        <h2 className="preferences-title">Valitse vakuutuspreferenssit</h2>
+    <div className="game">
+      <section className="intro">
+        <h2>Pelillistetty kilpailutus, tosi säästöt</h2>
+        <p>Tosi peli auttaa sinua kilpailuttamaan auto-, koti- ja matkavakuutukset hauskasti. 
+           Pyöräytä, näe voittajat ja yhdistä paras kokonaisuus. Säästöä jopa 1000 € vuodessa – 
+           ja jos sama yhtiö voittaa kaikki, saat suuren keskittämisbonuksen.</p>
+      </section>
+      
+      <p className="preference-instruction">Valitse vakuutuspreferenssit pelataksesi peliä.</p>
+      
+      <div className="preferences-section filters">
+        <h2 className="preferences-title sr-only">Valitse vakuutuspreferenssit</h2>
         
         <PreferenceSelector
           label="Autovakuutuksen laajuus"
@@ -167,29 +176,40 @@ const SlotMachine = ({ user, onRegisterClick }) => {
         />
       </div>
       
-      <div className="reels-container">
-        <SlotReel
-          title="Autovakuutus"
-          logos={logos}
-          winner={winners?.[0]}
-          spinning={spinning}
-          duration={1600}
-        />
-        <SlotReel
-          title="Kotivakuutus"
-          logos={logos}
-          winner={winners?.[1]}
-          spinning={spinning}
-          duration={2000}
-        />
-        <SlotReel
-          title="Matkavakuutus"
-          logos={logos}
-          winner={winners?.[2]}
-          spinning={spinning}
-          duration={2400}
-        />
-      </div>
+      <section className="machine">
+        <div className="machine-container">
+          <aside className="win-label">
+            <div className="arrow-indicator">→</div>
+            <p>Keskirivi näyttää kilpailutuksen voittajan</p>
+          </aside>
+          <div className="reels-layout">
+            <div className="reels">
+              <div className="center-line-highlight"></div>
+              <SlotReel
+                title="Autovakuutus"
+                logos={logos}
+                winner={winners?.[0]}
+                spinning={spinning}
+                duration={1600}
+              />
+              <SlotReel
+                title="Kotivakuutus"
+                logos={logos}
+                winner={winners?.[1]}
+                spinning={spinning}
+                duration={2000}
+              />
+              <SlotReel
+                title="Matkavakuutus"
+                logos={logos}
+                winner={winners?.[2]}
+                spinning={spinning}
+                duration={2400}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
       
       <div className="spin-button-container">
         <button

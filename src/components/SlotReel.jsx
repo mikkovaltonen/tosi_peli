@@ -30,23 +30,23 @@ const SlotReel = ({ title, logos, winner, spinning, duration }) => {
   }, [spinning, winner, logos]);
   
   return (
-    <div className="reel-column">
-      <h3 className="reel-title">{title}</h3>
-      <div className="reel-window">
-        <div
+    <div className="reel">
+      <div className="reel-label">{title}</div>
+      <div className="window">
+        <ul
           ref={stripRef}
-          className={`reel-strip ${spinning ? 'spinning' : ''}`}
+          className={`strip ${spinning ? 'spinning' : ''}`}
           style={spinning ? { '--duration': `${duration}ms` } : {}}
         >
           {longList.map((logo, index) => (
-            <div key={`${logo.id}-${index}`} className="reel-item">
+            <li key={`${logo.id}-${index}`} className="reel-item">
               <img src={logo.src} alt={logo.name} />
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
       {winner && !spinning && (
-        <div className="win-line">
+        <div className="winline">
           {winner.name} voitti {title.toLowerCase()}n kilpailutuksen
         </div>
       )}

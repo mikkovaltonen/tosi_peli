@@ -1,16 +1,21 @@
 /* Main styles for Tosi Peli */
 
 :root {
-  --primary: #2ea44f;
-  --danger: #d73a49;
-  --win: #ffd700;
-  --secondary: #6c757d;
-  --dark: #24292e;
+  --bg: #f0f4f8;
+  --panel: #ffffff;
+  --accent: #3b82f6;
+  --accent-2: #0ea5e9;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --win: #22c55e;
+  --danger: #ef4444;
+  --shadow-color: rgba(0,0,0,0.1);
+  --primary: #3b82f6;
+  --secondary: #64748b;
+  --dark: #0f172a;
   --light: #f8f9fa;
   --lighter: #ffffff;
-  --border: #d1d5da;
-  --shadow: rgba(0, 0, 0, 0.1);
-  --shadow-strong: rgba(0, 0, 0, 0.2);
 }
 
 * {
@@ -20,9 +25,15 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: var(--light);
-  color: var(--dark);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  background-image: url('/assets/fruit_slot.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--text);
   overflow-x: hidden;
 }
 
@@ -40,13 +51,14 @@ body {
 }
 
 /* Header styles */
-.header {
-  background-color: var(--lighter);
-  box-shadow: 0 1px 3px var(--shadow);
-  padding: 1rem 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+.site-header {
+  text-align: center;
+  padding: 40px 20px 10px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 4px var(--shadow-color);
+  color: #fff;
+  position: relative;
 }
 
 .header-content {
@@ -55,17 +67,28 @@ body {
   align-items: center;
 }
 
-.header h1 {
-  font-size: 1.5rem;
-  color: var(--primary);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.title {
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  font-size: clamp(28px, 4vw, 42px);
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  margin: 0;
+}
+
+.subtitle {
+  color: #dbeafe;
+  margin-top: 8px;
+  font-size: 16px;
 }
 
 .header-buttons {
   display: flex;
-  gap: 0.5rem;
+  justify-content: flex-end;
+  gap: 10px;
+  position: absolute;
+  top: 10px;
+  right: 20px;
 }
 
 .user-info {
@@ -121,27 +144,37 @@ body {
   cursor: not-allowed;
 }
 
-/* Slot Machine Container */
+/* Game Container */
 .slot-container {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: calc(100vh - 70px);
-  padding: 2rem 0;
-  position: relative;
-  overflow: hidden;
+  padding: 16px;
 }
 
-.slot-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('/assets/slot_background.jpg');
-  background-size: cover;
-  background-position: center;
-  opacity: 0.1;
-  z-index: 0;
+.game {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.intro {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.intro h2 {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.preference-instruction {
+  text-align: center;
+  margin: 20px 0;
+  font-weight: 600;
+  color: var(--text);
 }
 
 .slot-machine {
@@ -155,100 +188,211 @@ body {
   max-width: 900px;
 }
 
-/* Preferences Section */
-.preferences-section {
-  margin-bottom: 2rem;
+/* Filters/Preferences Section */
+.filters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
-.preferences-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: var(--dark);
-}
-
-.preference-group {
-  margin-bottom: 1.5rem;
-}
-
-.preference-label {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: var(--dark);
-}
-
-.slicer-options {
+.preference-group,
+.filter {
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.preference-label,
+.filter-label {
+  font-weight: 600;
+  color: #0b1324;
+  font-size: 14px;
+}
+
+.slicer-options,
+.slicer {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .slicer-option {
-  flex: 1;
-  padding: 0.75rem;
-  border: 2px solid var(--border);
-  background: var(--lighter);
-  border-radius: 8px;
+  flex: 1 1 auto;
+  padding: 12px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #f8fafc;
   cursor: pointer;
-  transition: all 0.2s;
+  color: #0b1324;
+  transition: all 0.2s ease;
   text-align: center;
   font-weight: 500;
 }
 
 .slicer-option:hover {
-  border-color: var(--primary);
-  background: var(--light);
+  filter: brightness(1.02);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .slicer-option.active {
-  border-color: var(--primary);
-  background: var(--primary);
-  color: white;
+  background: #dbeafe;
+  border-color: #3b82f6;
+  color: #1e40af;
+  box-shadow: 0 0 0 2px rgba(59,130,246,.15) inset;
 }
 
-/* Slot Reels */
-.reels-container {
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Machine Section */
+.machine {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 32px var(--shadow-color);
+  border-radius: 24px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.machine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.machine-container {
   display: flex;
-  gap: 1rem;
+  align-items: center;
   justify-content: center;
-  margin: 2rem 0;
-  padding: 2rem;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-  border-radius: 15px;
-  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+  gap: 30px;
+  position: relative;
 }
 
+.win-label {
+  background: var(--panel);
+  border: 2px solid var(--accent);
+  color: var(--text);
+  padding: 16px 20px;
+  border-radius: 14px;
+  font-weight: 600;
+  max-width: 180px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.win-label p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.arrow-indicator {
+  font-size: 24px;
+  color: var(--accent);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
+
+.reels-layout {
+  display: flex;
+  gap: 20px;
+  align-items: start;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.reels {
+  display: flex;
+  gap: 20px;
+  align-items: start;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+}
+
+.center-line-highlight {
+  display: none;
+}
+
+.reel,
 .reel-column {
-  flex: 1;
-  max-width: 200px;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  border-radius: 18px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 20px var(--shadow-color);
+  transition: transform 0.3s ease;
 }
 
+.reel:hover,
+.reel-column:hover {
+  transform: translateY(-2px);
+}
+
+.reel-label,
 .reel-title {
   text-align: center;
-  color: white;
+  color: var(--text);
   font-weight: 600;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-size: 14px;
 }
 
+.window,
 .reel-window {
   height: 300px;
-  background: var(--lighter);
-  border-radius: 10px;
+  background: linear-gradient(180deg, #f1f5f9, #e2e8f0);
+  border-radius: 12px;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid var(--border);
 }
 
+.strip,
 .reel-strip {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   transition: transform 0.1s ease-out;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
+.strip.spinning,
 .reel-strip.spinning {
   animation: spin var(--duration, 2s) cubic-bezier(0.17, 0.67, 0.83, 0.67);
 }
@@ -292,18 +436,21 @@ body {
   object-fit: contain;
 }
 
+.winline,
 .win-line {
   text-align: center;
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: var(--secondary);
+  color: var(--accent);
   min-height: 1.5rem;
+  font-weight: 600;
 }
 
 /* Spin Button */
 .spin-button-container {
   text-align: center;
-  margin: 2rem 0;
+  margin: 2rem auto;
+  max-width: 400px;
 }
 
 .spin-button {
@@ -374,8 +521,10 @@ body {
   text-align: center;
   margin-top: 2rem;
   padding: 2rem;
-  background: var(--light);
-  border-radius: 10px;
+  background: var(--panel);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 8px var(--shadow-color);
 }
 
 .result {
@@ -548,22 +697,37 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .reels-container {
-    flex-direction: column;
-    align-items: center;
+  .filters {
+    grid-template-columns: 1fr;
   }
   
-  .reel-column {
+  .reels {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .reel {
     width: 100%;
     max-width: 300px;
+  }
+  
+  .machine-container {
+    flex-direction: column;
+  }
+  
+  .win-label {
+    max-width: 100%;
+    order: -1;
+    margin-bottom: 1rem;
   }
   
   .slicer-options {
     flex-direction: column;
   }
   
-  .header h1 {
-    font-size: 1.2rem;
+  .title {
+    font-size: 1.8rem;
   }
   
   .spin-button {
@@ -571,13 +735,10 @@ body {
     padding: 0.8rem 2rem;
   }
   
-  .header-content {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
   .header-buttons {
+    position: static;
     width: 100%;
     justify-content: center;
+    margin-top: 1rem;
   }
 }
