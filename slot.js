@@ -28,6 +28,7 @@ const slicerTravel = document.getElementById("slicer-travel");
 let autoCoverValue = "";
 let homeCoverValue = "";
 let travelCoverValue = "";
+let playCount = 0; // Pyöräytyslaskuri - nollautuu sivun päivityksessä
 // confirmBtn removed with simplified UI
 
 function buildStrip(stripId){
@@ -185,7 +186,6 @@ function showInfoModal(title, message) {
 
 // Dynamic tooltip functionality
 function updateSpinButtonTooltip() {
-	const playCount = Number(sessionStorage.getItem("tosiPeliPlayCount") || 0);
 	const tooltipIcon = spinBtn.querySelector('.tooltip-icon');
 	
 	// Create or update tooltip content
@@ -231,7 +231,6 @@ spinBtn.addEventListener("click", async () => {
 	}
 
 	// Enforce per-session play count limits
-	const playCount = Number(sessionStorage.getItem("tosiPeliPlayCount") || 0);
 	console.log("Play count:", playCount, "Slicer changes:", hasSlicerChangesSinceLastPlay());
 	if(playCount >= 2){
 		console.log("Showing info for playCount >=2");
@@ -319,8 +318,8 @@ spinBtn.addEventListener("click", async () => {
 
 	spinBtn.disabled = false;
 
-	// Persist play state in session storage
-	sessionStorage.setItem("tosiPeliPlayCount", String(playCount + 1));
+	// Increment play count
+	playCount++;
 	localStorage.setItem("tosiPeliLastSlicers", JSON.stringify({ auto:autoCoverValue, home:homeCoverValue, travel:travelCoverValue }));
 	
 	// Update tooltip to reflect new state
