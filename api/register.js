@@ -106,5 +106,10 @@ async function handler(req, res) {
   }
 }
 
-// Support both CommonJS and ES6 modules
-module.exports = handler;
+// Export for Vercel (ES6 modules)
+export default handler;
+
+// Also support CommonJS for local development
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = handler;
+}
