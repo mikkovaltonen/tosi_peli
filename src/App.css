@@ -1,0 +1,583 @@
+/* Main styles for Tosi Peli */
+
+:root {
+  --primary: #2ea44f;
+  --danger: #d73a49;
+  --win: #ffd700;
+  --secondary: #6c757d;
+  --dark: #24292e;
+  --light: #f8f9fa;
+  --lighter: #ffffff;
+  --border: #d1d5da;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --shadow-strong: rgba(0, 0, 0, 0.2);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--light);
+  color: var(--dark);
+  overflow-x: hidden;
+}
+
+#root {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Header styles */
+.header {
+  background-color: var(--lighter);
+  box-shadow: 0 1px 3px var(--shadow);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Button styles */
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #2c974b;
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--border);
+  color: var(--dark);
+}
+
+.btn-outline:hover {
+  background-color: var(--light);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Slot Machine Container */
+.slot-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: calc(100vh - 70px);
+  padding: 2rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.slot-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/assets/slot_background.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.slot-machine {
+  position: relative;
+  z-index: 1;
+  background: var(--lighter);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px var(--shadow-strong);
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 900px;
+}
+
+/* Preferences Section */
+.preferences-section {
+  margin-bottom: 2rem;
+}
+
+.preferences-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--dark);
+}
+
+.preference-group {
+  margin-bottom: 1.5rem;
+}
+
+.preference-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--dark);
+}
+
+.slicer-options {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.slicer-option {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid var(--border);
+  background: var(--lighter);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  font-weight: 500;
+}
+
+.slicer-option:hover {
+  border-color: var(--primary);
+  background: var(--light);
+}
+
+.slicer-option.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
+/* Slot Reels */
+.reels-container {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin: 2rem 0;
+  padding: 2rem;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  border-radius: 15px;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.reel-column {
+  flex: 1;
+  max-width: 200px;
+}
+
+.reel-title {
+  text-align: center;
+  color: white;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.reel-window {
+  height: 300px;
+  background: var(--lighter);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.reel-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transition: transform 0.1s ease-out;
+}
+
+.reel-strip.spinning {
+  animation: spin var(--duration, 2s) cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}
+
+@keyframes spin {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-1800px);
+  }
+}
+
+.reel-item {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  background: white;
+}
+
+.reel-item.winner-highlight {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.reel-item img {
+  max-width: 100%;
+  max-height: 80px;
+  object-fit: contain;
+}
+
+.win-line {
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--secondary);
+  min-height: 1.5rem;
+}
+
+/* Spin Button */
+.spin-button-container {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.spin-button {
+  background: linear-gradient(135deg, var(--primary) 0%, #2c974b 100%);
+  color: white;
+  font-size: 1.5rem;
+  padding: 1rem 3rem;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(46, 164, 79, 0.4);
+  transition: all 0.3s;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+}
+
+.spin-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 164, 79, 0.5);
+}
+
+.spin-button:disabled {
+  background: var(--secondary);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-icon {
+  margin-left: 0.5rem;
+  cursor: help;
+}
+
+.tooltip-content {
+  visibility: hidden;
+  width: 300px;
+  background-color: var(--dark);
+  color: white;
+  text-align: left;
+  border-radius: 6px;
+  padding: 1rem;
+  position: absolute;
+  z-index: 1000;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -150px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.9rem;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.tooltip:hover .tooltip-content {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Results Section */
+.results-section {
+  text-align: center;
+  margin-top: 2rem;
+  padding: 2rem;
+  background: var(--light);
+  border-radius: 10px;
+}
+
+.result {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  transition: all 0.3s;
+}
+
+.result.win {
+  color: var(--win);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.result.tip {
+  color: var(--primary);
+}
+
+.advice {
+  color: var(--secondary);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.cta-button {
+  margin-top: 1rem;
+}
+
+.coin-icon {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  color: var(--dark);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--secondary);
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  color: var(--dark);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--dark);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(46, 164, 79, 0.1);
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-top: 0.25rem;
+}
+
+.checkbox-group label {
+  flex: 1;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.form-link {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.form-link a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.form-link a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .reels-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .reel-column {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .slicer-options {
+    flex-direction: column;
+  }
+  
+  .header h1 {
+    font-size: 1.2rem;
+  }
+  
+  .spin-button {
+    font-size: 1.2rem;
+    padding: 0.8rem 2rem;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .header-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+}
