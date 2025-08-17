@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Login</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Login</h1>
+    <p>Tämä on testisivu kirjautumisen debuggaukseen</p>
+    
+    <form id="testForm">
+        <input type="email" id="email" placeholder="Sähköposti" required>
+        <input type="password" id="password" placeholder="Salasana" required>
+        <button type="submit">Testaa kirjautuminen</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script>
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = 'Yritetään kirjautua...';
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<span class="success">✅ Kirjautuminen onnistui!</span>\n\n` +
+                        `Email: ${result.user.email}\n` +
+                        `User ID: ${result.user.userId}\n` +
+                        `Token expires in: ${result.user.expiresIn} seconds\n\n` +
+                        `Käyttäjätiedot:\n` +
+                        JSON.stringify(result.user.userData, null, 2);
+                } else {
+                    resultDiv.innerHTML = `<span class="error">❌ Kirjautuminen epäonnistui</span>\n\n` +
+                        `Virhe: ${result.error}\n` +
+                        `Tiedot: ${result.details || 'Ei lisätietoja'}\n\n` +
+                        `HTTP Status: ${response.status}`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Verkkovirhe</span>\n\n${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

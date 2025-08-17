@@ -1,151 +1,323 @@
-# Tosi peli – Vakuutusten kilpailutus pelillistettynä
+# Tosi Peli - Vakuutusten kilpailutus pelillistettynä 🎰
 
-🎰 **Tosi peli** on innovatiivinen vakuutusten kilpailutuspalvelu, joka yhdistää pelillistämisen ja vakuutusten vertailun. Säästä jopa 1000 € vuodessa hauskalla ja visuaalisella tavalla!
+Interaktiivinen vakuutusvertailusovellus, joka pelillistää vakuutusten kilpailutuksen slot-koneen muodossa. Käyttäjät voivat simuloida eri vakuutusyhtiöiden kilpailutusta ja rekisteröityä saamaan oikeat tarjoukset.
 
-## 🎮 Demo
+## 🎯 Ominaisuudet
 
-Kokeile peliä: [Vercel Demo](https://tosi-peli.vercel.app/) *(tulossa pian)*
+- **Pelillistetty käyttökokemus**: Slot-kone UI vakuutusten vertailuun
+- **Reaaliaikaiset animaatiot**: Sujuvat pyöritysanimaatiot ja äänitehosteet
+- **Preferenssipohjainen vertailu**: Käyttäjä valitsee vakuutusten laajuudet ennen pyöritystä
+- **Turvallinen rekisteröinti**: Firebase-integraatio tietoturvallisella API-reitillä
+- **Responsiivinen suunnittelu**: Toimii kaikilla laitteilla
 
-## 🌟 Ominaisuudet
+## 🔒 Tietoturva
 
-### Pelillistetty kilpailutus
-- **Kolme kelaa** vakuutuksille: Auto, Koti ja Matka
-- **Visuaalinen slot-kone** -kokemus vakuutusten vertailuun
-- **Dynaaminen hinnoittelu** perustuen käyttäjän valintoihin
+Sovellus käyttää **turvallista palvelinpuolen arkkitehtuuria** Firebase-integraatiossa:
 
-### Interaktiiviset elementit
-- Valitse vakuutusten laajuudet ennen pyöritystä
-- Näe voittajat keskirivillä (korostettu sinisellä viivalla)
-- Saat suuren keskittämisbonuksen jos sama yhtiö voittaa kaikki!
+### Arkkitehtuuri
+```
+Käyttäjän selain → Vercel API Route → Firebase
+  (ei API-avaimia)    (turvallinen)    (suojattu)
+```
 
-### Rajoitukset ja säännöt
-- 2 ilmaista pyöritystä per sessio
-- Toinen pyöritys vaatii preferenssien muuttamisen
-- Rekisteröidy saadaksesi oikeat hinnat ja rajattomat pyöritykset
+### Tietoturvaominaisuudet
 
-## 🛠 Teknologiat
+1. **API-avaimet piilossa**: Kaikki Firebase-avaimet säilytetään palvelimen ympäristömuuttujissa
+2. **Palvelinpuolen validointi**: Kaikki data validoidaan ennen tallennusta
+3. **REST API autentikointi**: Käyttää Firebase Authentication -tokeneita
+4. **CORS-suojaus**: Vain sallitut domainit voivat käyttää API:a
+5. **Ei client-side Firebase SDK:ta**: Vältetään API-avainten paljastuminen
 
-- **Frontend**: Vanilla JavaScript, HTML5, CSS3
-- **Tietokanta**: Firebase Firestore
-- **Ääniefektit**: Mukautetut slot-äänet
-- **Responsiivisuus**: Mobiiliystävällinen design
-- **Hosting**: Vercel
+### Tiedostorakenne
+```
+/
+├── api/
+│   └── register.js      # Turvallinen Vercel serverless function
+├── public/              # Staattiset tiedostot (logot, äänet)
+├── index.html           # Pääsivu
+├── slot.js              # Pelin logiikka (ei API-avaimia!)
+├── styles.css           # Tyylit
+├── .env                 # Ympäristömuuttujat (EI commitoida!)
+└── .env.example         # Esimerkki ympäristömuuttujista
+```
 
-## 📦 Asennus
+## 🚀 Asennus ja käyttöönotto
 
-1. Kloonaa repository:
+### Esivalmistelut
+
+1. Node.js (v18 tai uudempi)
+2. Firebase-projekti ([luo tästä](https://console.firebase.google.com))
+3. Vercel-tili ([rekisteröidy tästä](https://vercel.com))
+
+### Paikallinen kehitys
+
+1. **Kloonaa repositorio**
 ```bash
 git clone https://github.com/mikkovaltonen/tosi_peli.git
 cd tosi_peli
 ```
 
-2. Asenna riippuvuudet (HTTP-palvelin kehitykseen):
+2. **Asenna riippuvuudet**
 ```bash
-npm install -g http-server
+npm install
 ```
 
-3. Käynnistä kehityspalvelin:
+3. **Konfiguroi ympäristömuuttujat**
 ```bash
-npx http-server . -p 8080
+# Kopioi esimerkkitiedosto
+cp .env.example .env
+
+# Muokkaa .env-tiedostoa ja lisää omat Firebase-avaimesi
+nano .env
 ```
 
-4. Avaa selaimessa: `http://localhost:8080`
+4. **Käynnistä kehityspalvelin**
+```bash
+npm run dev
+# Avaa http://localhost:3000
+```
 
-## 🎯 Käyttö
+## 🔧 Ympäristömuuttujien konfigurointi
 
-1. **Valitse vakuutuspreferenssit**:
-   - Autovakuutus: Liikenne / Osakasko / Täyskasko
-   - Kotivakuutus: Perus / Laaja + matkatavarat
-   - Matkavakuutus: Vain lyhyet matkat / Laaja
+### .env-tiedoston sisältö
 
-2. **Pyöritä keloja** painamalla PYÖRITÄ-nappia
+```env
+# Firebase Configuration (Firebase Console > Project Settings)
+FIREBASE_API_KEY=your-api-key
+FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+FIREBASE_PROJECT_ID=your-project-id
+FIREBASE_STORAGE_BUCKET=your-project.firebasestorage.app
+FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+FIREBASE_API_ID=your-app-id
+FIREBASE_MEASUREMENT_ID=your-measurement-id
 
-3. **Katso tulokset**:
-   - Keskirivi näyttää voittajat
-   - Sama yhtiö kaikissa = suuri keskittämisbonus!
-   - Eri yhtiöt = hajauttamalla säästät
+# Firebase käyttäjätunnukset (luo Firebase Authenticationissa)
+FIREBASE_USER=app@app.fi
+FIREBASE_USER_PW=your-secure-password
+```
 
+### Firebase-projektin konfigurointi
 
-Uusinta eri valinnoilla
-Käyttäjä voi halutessaan ajaa pelin uudelleen eri preferenssivalinnoilla. Jos hän yrittää ajaa samoilla valinnoilla, häntä ohjataan muuttamaan valintoja.
+1. **Luo Firebase-projekti**
+   - Mene [Firebase Consoleen](https://console.firebase.google.com)
+   - Luo uusi projekti tai valitse olemassa oleva
 
-Tulokset ja tilikutsu
-Aina kun käyttäjä ajaa pelin, avataan dialogi, joka selittää, mitkä yhtiöt voittivat. Samalla käyttäjälle tarjotaan mahdollisuus luoda tili ja pelata “tosipeliä” todellisilla vakuutustarjouksilla. Jos käyttäjä päättää luoda tilin, avataan rekisteröintidialogi.
+2. **Ota käyttöön Firestore**
+   - Valitse "Firestore Database" vasemmasta valikosta
+   - Klikkaa "Create database"
+   - Valitse production mode
+   - Valitse sijainti (europe-west1 Suomelle)
 
-4. **Rekisteröidy** tosipeliin saadaksesi oikeat hinnat
+3. **Konfiguroi Authentication**
+   - Valitse "Authentication" vasemmasta valikosta
+   - Ota käyttöön "Email/Password" sign-in method
+   - Lisää käyttäjä Users-välilehdessä (sama kuin .env:ssä)
 
-Rekisteröitymisen tai kirjautumisen jälkeen
+4. **Hae projektin avaimet**
+   - Project Settings > General > Your apps > Web app
+   - Kopioi konfiguraatio .env-tiedostoon
 
-Kun käyttäjä on rekisteröitynyt tai kirjautunut sisään, hänen tietonsa näytetään yläreunassa
+## 📦 Vercel-julkaisu
 
-5. **Oikeiden hintojen haku**
-Tässä vaiheess pyydentään lupa hintojen hakuun 
-“Hae autovakuutustarjouksia ja kotivakuutustarjouksia.” Tarjoukset haetaan API:lla.
+### 1. Asenna Vercel CLI
+```bash
+npm install -g vercel
+```
 
-6. **Oikeiden hintojen raakadata esitys***
-Kun tarjoukset on haettu, ne päivittyvät taulukkoon ja käyttäjän tila muuttuu muotoon “Tarjoukset saatu.”
+### 2. Kirjaudu Verceliin
+```bash
+vercel login
+```
 
-7. **Pyöritä kelloja oikeilla hinnoilla** eli tosipeli
-Nyt käyttäjä voi vertailla tarjouksia pyörittämällä peliä. Kunkin kategorian voittaja on halvin tarjous, joka sisältää halutun laajuuden. Järjestölmö laskee kokonaihinnan ja säästön keskimääräisestä ja huonoimmasta tarjouksesta. 
+### 3. Konfiguroi ympäristömuuttujat Vercelissa
 
+**Vaihtoehto A: Web-käyttöliittymä**
+1. Mene projektin asetuksiin Vercelissa
+2. Settings → Environment Variables
+3. Lisää kaikki .env-tiedoston muuttujat
+
+**Vaihtoehto B: CLI**
+```bash
+# Lisää jokainen muuttuja erikseen
+vercel env add FIREBASE_API_KEY
+vercel env add FIREBASE_PROJECT_ID
+# jne...
+```
+
+### 4. Julkaise sovellus
+```bash
+# Kehitysversio
+vercel
+
+# Tuotantoversio
+vercel --prod
+```
+
+## 🎮 Käyttöohje
+
+1. **Valitse vakuutusten laajuudet**
+   - Auto: Valitse mini/laaja/kasko
+   - Koti: Valitse perus/normaali/laaja
+   - Matka: Valitse perus/normaali/premium
+
+2. **Pyöritä rulettia**
+   - Klikkaa "PYÖRITÄ" -nappia
+   - Maksimissaan 2 ilmaista pyöritystä per sessio
+   - Vaihda preferenssejä saadaksesi toisen pyörityksen
+
+3. **Katso tulokset**
+   - Näet voittajat jokaiselle vakuutustyypille
+   - Keskittämisbonus jos sama yhtiö voittaa kaikki
+
+4. **Rekisteröidy**
+   - Täytä tietosi saadaksesi oikeat tarjoukset
+   - Tiedot tallennetaan turvallisesti Firebaseen
+
+## 🛠️ Teknologiat
+
+- **Frontend**: Vanilla JavaScript, HTML5, CSS3
+- **Backend**: Vercel Serverless Functions
+- **Tietokanta**: Firebase Firestore
+- **Autentikointi**: Firebase Authentication
+- **Hosting**: Vercel
+- **Versionhallinta**: Git & GitHub
+
+## 📝 API-dokumentaatio
+
+### POST /api/register
+
+Tallentaa käyttäjän rekisteröintitiedot turvallisesti Firebaseen.
+
+**Request body:**
+```json
+{
+  "sotu": "010190-123A",
+  "zip": "00100",
+  "plate": "ABC-123",
+  "homeSize": "75",
+  "consentStore": true,
+  "consentMarketing": false,
+  "consentSale": false
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Registration saved successfully",
+  "id": "documentId123"
+}
+```
+
+**Virhetilanteet:**
+- `400`: Puuttuvat pakolliset kentät
+- `401`: Firebase-autentikointi epäonnistui
+- `500`: Palvelinvirhe
+
+## 🐛 Vianmääritys
+
+### Yleisimmät ongelmat
+
+1. **"Authentication failed" -virhe**
+   - Tarkista että FIREBASE_USER ja FIREBASE_USER_PW ovat oikein
+   - Varmista että käyttäjä on luotu Firebase Authenticationissa
+
+2. **"Failed to save registration" -virhe**
+   - Tarkista että Firestore on otettu käyttöön
+   - Varmista että FIREBASE_PROJECT_ID on oikein
+
+3. **Vercel-julkaisu epäonnistuu**
+   - Varmista että kaikki ympäristömuuttujat on asetettu
+   - Tarkista `vercel logs` virheilmoitukset
 
 ## 📁 Projektin rakenne
 
 ```
 tosi_peli/
-├── index.html              # Pääsivu
-├── slot.js                 # Pelin logiikka
-├── styles.css              # Tyylit
-├── vercel.json             # Vercel-konfiguraatio
+├── api/                    # Vercel serverless functions
+│   └── register.js         # Turvallinen rekisteröinti-endpoint
 ├── public/                 # Julkiset tiedostot
 │   ├── *_logo.png         # Vakuutusyhtiöiden logot
 │   ├── *.wav/.mp3         # Ääniefektit
 │   └── slot_background.jpg # Taustakuva
-└── Product_protection_mapping/
-    └── car insurance protections.xlsx
+├── index.html             # Pääsivu
+├── slot.js                # Pelin logiikka (ei API-avaimia!)
+├── styles.css             # Tyylit
+├── package.json           # Node.js riippuvuudet
+├── vercel.json            # Vercel-konfiguraatio
+├── .env                   # Ympäristömuuttujat (EI commitoida!)
+├── .env.example           # Esimerkki ympäristömuuttujista
+└── .gitignore            # Git ignore -säännöt
 ```
 
-## 🚀 Julkaisu (Vercel)
+## 🔄 Viimeisimmät päivitykset
 
-Projekti on konfiguroitu Vercel-julkaisua varten:
+### v2.0.0 - Tietoturvaparannus (2025)
+- ✅ Firebase-integraatio siirretty palvelinpuolelle
+- ✅ Poistettu kovakoodatut API-avaimet
+- ✅ Lisätty turvallinen Vercel API route
+- ✅ Pyöräytyslaskuri nollautuu sivun päivityksessä
+
+### v1.0.0 - Alkuperäinen julkaisu
+- ✅ Pelillistetty vakuutusvertailu
+- ✅ Dynaaminen tooltip
+- ✅ Visuaalinen keskirivi korostuksella
+- ✅ Responsiivinen design
+
+## 🤝 Kehittäminen
+
+### Kehitysympäristö
 
 ```bash
-vercel --prod
+# Asenna riippuvuudet
+npm install
+
+# Käynnistä Vercel dev-palvelin
+npm run dev
+
+# Testaa API-reitti
+curl -X POST http://localhost:3000/api/register \
+  -H "Content-Type: application/json" \
+  -d '{"sotu":"010190-123A","zip":"00100","plate":"ABC-123","homeSize":"75"}'
 ```
 
-## 🔧 Kehitysominaisuudet
+### Git-työnkulku
 
-- **Dynaaminen tooltip**: Näyttää tarkan syyn miksi pyöritys ei onnistu
-- **Visuaalinen keskirivi**: Korostettu sinisellä viivalla ja hehkuefektillä
-- **Responsiivinen design**: Toimii mobiilissa ja tabletilla
-- **Firebase-integraatio**: Valmis oikeiden hintojen hakuun
+```bash
+# Luo uusi feature branch
+git checkout -b feature/ominaisuus-nimi
+
+# Tee muutokset ja commitoi
+git add .
+git commit -m "feat: Lisää uusi ominaisuus"
+
+# Pushaa GitHubiin
+git push origin feature/ominaisuus-nimi
+
+# Luo Pull Request GitHubissa
+```
 
 ## 📝 Tulevat ominaisuudet
 
 - [ ] Oikeat vakuutushinnat API:sta
-- [ ] Käyttäjän kirjautuminen
+- [ ] Käyttäjän kirjautuminen OAuth:lla
 - [ ] Tallennetut kilpailutukset
 - [ ] Vertailu eri ajankohtina
 - [ ] Lisää vakuutusyhtiöitä
-
-## 🤝 Kehittäjälle
-
-### Kommentoidut muutokset
-Kaikki koodimuutokset on kommentoitu selkeästi laadunvarmistuksen vuoksi.
-
-### PowerShell-komennot
-Projekti käyttää PowerShell-komentoja Windows-ympäristössä.
-
-### Firebase-konfiguraatio
-Firebase-avaimet on määritelty `slot.js`-tiedostossa. Tuotantokäytössä siirrä ne ympäristömuuttujiin.
+- [ ] Admin-paneeli tilastoille
 
 ## 📄 Lisenssi
 
 MIT License - Vapaasti käytettävissä ja muokattavissa
 
-## 👨‍💻 Tekijä
+## 👥 Kehittäjät
 
-Mikko Valtonen - [GitHub](https://github.com/mikkovaltonen)
+- Mikko Valtonen - [GitHub](https://github.com/mikkovaltonen)
+
+## 📞 Yhteystiedot
+
+Kysymykset ja palaute: [Luo issue GitHubissa](https://github.com/mikkovaltonen/tosi_peli/issues)
 
 ---
 

@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow authenticated users to read and write their own registration
+    match /registrations/{document} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow delete: if false; // Never allow delete
+    }
+    
+    // Alternative: Allow all authenticated users to read/write
+    // (less secure but works for testing)
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

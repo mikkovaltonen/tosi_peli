@@ -12,7 +12,7 @@
 	<link rel="icon" href="public/if_logo.png" />
 	<style>
 		body {
-			background-image: url('public/fruit slot.jpg');
+			background-image: url('public/fruit_slot.jpg');
 			background-size: cover;
 			background-position: center;
 			background-repeat: no-repeat;
@@ -137,6 +137,14 @@
 				</div>
 				<form id="registerForm" class="modal-body">
 					<div class="form-row">
+						<label>Sähköposti
+							<input id="reg-email" name="email" type="email" placeholder="matti@esimerkki.fi" required />
+						</label>
+						<label>Salasana
+							<input id="reg-password" name="password" type="password" placeholder="Vähintään 6 merkkiä" minlength="6" required />
+						</label>
+					</div>
+					<div class="form-row">
 						<label>Henkilötunnus (sotu)
 							<input id="reg-sotu" name="sotu" type="text" placeholder="010101-123A" pattern="[0-9]{6}[+\-A][0-9]{3}[0-9A-Za-z]" required />
 						</label>
@@ -161,11 +169,41 @@
 						<button type="submit" class="btn-primary">Lähetä</button>
 						<button type="button" class="btn-secondary" data-close-modal>Peruuta</button>
 					</div>
+					<div class="modal-footer" style="text-align: center; margin-top: 1rem;">
+						<p>Onko sinulla jo tili? <a href="#" onclick="switchToLogin(event)">Kirjaudu sisään tästä</a></p>
+					</div>
 				</form>
 			</div>
 		</div>
 
-
+		<!-- Login Modal -->
+		<div id="loginModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+			<div class="modal-card">
+				<div class="modal-header">
+					<h3 id="loginTitle">Kirjaudu sisään</h3>
+					<button class="modal-close" data-close-modal>&times;</button>
+				</div>
+				<form id="loginForm" class="modal-body">
+					<div class="form-row">
+						<label>Sähköposti
+							<input id="login-email" name="email" type="email" placeholder="matti@esimerkki.fi" required />
+						</label>
+					</div>
+					<div class="form-row">
+						<label>Salasana
+							<input id="login-password" name="password" type="password" placeholder="Salasanasi" required />
+						</label>
+					</div>
+					<div class="modal-actions">
+						<button type="submit" class="btn-primary">Kirjaudu</button>
+						<button type="button" class="btn-secondary" data-close-modal>Peruuta</button>
+					</div>
+					<div class="modal-footer" style="text-align: center; margin-top: 1rem;">
+						<p>Eikö sinulla ole tiliä? <a href="#" onclick="switchToRegister(event)">Rekisteröidy tästä</a></p>
+					</div>
+				</form>
+			</div>
+		</div>
 
 		<section class="help">
 			<h2>Miten peli toimii?</h2>

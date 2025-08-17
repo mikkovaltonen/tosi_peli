@@ -230,12 +230,14 @@ spinBtn.addEventListener("click", async () => {
 		return;
 	}
 
-	// Enforce per-session play count limits
-	console.log("Play count:", playCount, "Slicer changes:", hasSlicerChangesSinceLastPlay());
-	if(playCount >= 2){
+	// Enforce per-session play count limits (unless user is logged in)
+	const unlimitedSpins = sessionStorage.getItem('unlimitedSpins') === 'true';
+	console.log("Play count:", playCount, "Slicer changes:", hasSlicerChangesSinceLastPlay(), "Unlimited:", unlimitedSpins);
+	
+	if(!unlimitedSpins && playCount >= 2){
 		console.log("Showing info for playCount >=2");
-		showInfoModal("Ilmaiset pyöritykset käytetty", "Olet käyttänyt molemmat ilmaiset pyöritykset (2/2).\n\nRekisteröidy jatkaaksesi peliä oikeilla vakuutushinnoilla ja säästääksesi jopa 1000€ vuodessa!");
-		setTimeout(() => openRegisterModal(), 2000);
+		showInfoModal("Ilmaiset pyöritykset käytetty", "Olet käyttänyt molemmat ilmaiset pyöritykset (2/2).\n\nKirjaudu sisään tai rekisteröidy jatkaaksesi peliä oikeilla vakuutushinnoilla!");
+		setTimeout(() => openLoginModal(), 2000);
 		return;
 	}
 	if(playCount >= 1 && !hasSlicerChangesSinceLastPlay()){
@@ -337,11 +339,30 @@ if(ctaRegisterBtn){
 const loginBtn = document.getElementById("loginBtn");
 if (loginBtn) {
 	loginBtn.addEventListener("click", () => {
-		// Placeholder for login modal or logic
-		alert("Loggaa sisään toiminnallisuus tulossa. Käytä väliaikaisesti rekisteröintiä.");
-		// Future: Implement Firebase Auth login
+		openLoginModal();
 	});
 }
+
+// Open login modal
+function openLoginModal() {
+	toggleModal("loginModal", true);
+}
+
+// Switch from login to register modal
+function switchToRegister(event) {
+	event.preventDefault();
+	toggleModal("loginModal", false);
+	toggleModal("registerModal", true);
+}
+window.switchToRegister = switchToRegister;
+
+// Switch from register to login modal
+function switchToLogin(event) {
+	event.preventDefault();
+	toggleModal("registerModal", false);
+	toggleModal("loginModal", true);
+}
+window.switchToLogin = switchToLogin;
 
 const registerBtn = document.getElementById("registerBtn");
 if (registerBtn) {
@@ -387,50 +408,159 @@ if(registerForm){
 // Future hooks for user session & pricing API
 // window.app = { login:()=>{}, fetchPrices:()=>{} };
 
-// Initialize Firebase after the DOM is loaded
+// Initialize secure registration handler after DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-	// Placeholder: In a real setup, load from .env or secure config
-	const firebaseConfig = {
-		apiKey: "AIzaSyCxzKGgRr9NQFBP6pmC26F7oepaV9Rj4ec",
-		authDomain: "insurance-vault-b5176.firebaseapp.com",
-		projectId: "insurance-vault-b5176",
-		storageBucket: "insurance-vault-b5176.firebasestorage.app",
-		messagingSenderId: "521130052279",
-		appId: "1:521130052279:web:4bcf7c27f9dab6d23a5b32",
-		measurementId: "G-M5T3XJ9GBB",
-		databaseURL: "https://insurance-vault-b5176.firebaseio.com" // Assumed based on project ID; adjust if needed
-	};
-
-	// Firebase initialization commented out - requires Firebase SDK
-	// const app = firebase.initializeApp(firebaseConfig);
-	// const db = firebase.firestore(app);
-
-	// Handle registration submit
+	// Handle registration submit using secure API route
 	const registerForm = document.getElementById("registerForm");
 	if(registerForm){
 		registerForm.addEventListener("submit", async (e) => {
 			e.preventDefault();
 			const formData = new FormData(registerForm);
 			const userData = {
+				email: formData.get('email'),
+				password: formData.get('password'),
 				sotu: formData.get('sotu'),
 				zip: formData.get('zip'),
 				plate: formData.get('plate'),
 				homeSize: formData.get('homeSize'),
 				consentStore: document.getElementById('consent-store').checked,
 				consentMarketing: document.getElementById('consent-marketing').checked,
-				consentSale: document.getElementById('consent-sale').checked,
-				timestamp: firebase.firestore.FieldValue.serverTimestamp()
+				consentSale: document.getElementById('consent-sale').checked
 			};
 
 			try {
-				await db.collection('registrations').add(userData);
-				alert("Kiitos! Tietosi on tallennettu Firebase-tietokantaan. Luomme sinulle henkilökohtaisen kilpailutuksen.");
-				toggleModal("registerModal", false);
+				// Use secure server-side API route instead of direct Firebase access
+				const response = await fetch('/api/register', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(userData)
+				});
+
+				const result = await response.json();
+
+				if (response.ok) {
+					alert("Kiitos! Tietosi on tallennettu turvallisesti. Luomme sinulle henkilökohtaisen kilpailutuksen.");
+					toggleModal("registerModal", false);
+					registerForm.reset();
+				} else {
+					console.error("Registration error:", result.error);
+					// Show specific error message if available
+					if (result.error === 'Sähköpostiosoite on jo rekisteröity') {
+						alert("Tämä sähköpostiosoite on jo rekisteröity!\n\nVaihtoehdot:\n1. Kirjaudu sisään tällä sähköpostilla\n2. Käytä toista sähköpostiosoitetta rekisteröintiin");
+						// Automatically switch to login modal after 3 seconds
+						setTimeout(() => {
+							toggleModal("registerModal", false);
+							toggleModal("loginModal", true);
+							// Pre-fill the email in login form
+							const loginEmail = document.getElementById("login-email");
+							const regEmail = document.getElementById("reg-email");
+							if (loginEmail && regEmail) {
+								loginEmail.value = regEmail.value;
+							}
+						}, 3000);
+					} else {
+						alert("Virhe tallennuksessa. Yritä uudelleen.");
+					}
+				}
 			} catch (error) {
-				console.error("Error saving to Firestore:", error);
-				alert("Virhe tallennuksessa. Yritä uudelleen.");
+				console.error("Error submitting registration:", error);
+				alert("Verkkovirhe. Tarkista yhteytesi ja yritä uudelleen.");
 			}
 		});
+	}
+});
+
+// Handle login form submission
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+	loginForm.addEventListener("submit", async (e) => {
+		e.preventDefault();
+		const formData = new FormData(loginForm);
+		const loginData = {
+			email: formData.get('email'),
+			password: formData.get('password')
+		};
+
+		try {
+			const response = await fetch('/api/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(loginData)
+			});
+
+			const result = await response.json();
+
+			if (response.ok) {
+				// Store user data in sessionStorage
+				sessionStorage.setItem('user', JSON.stringify(result.user));
+				sessionStorage.setItem('isLoggedIn', 'true');
+				
+				alert(`Tervetuloa takaisin, ${result.user.email}!`);
+				toggleModal("loginModal", false);
+				loginForm.reset();
+				
+				// Update UI to show logged in state
+				updateUIForLoggedInUser(result.user);
+			} else {
+				console.error("Login error:", result.error, result.details);
+				// Show more specific error message
+				if (result.details) {
+					console.log("Firebase error details:", result.details);
+				}
+				alert(result.error || "Kirjautuminen epäonnistui. Tarkista sähköposti ja salasana.");
+			}
+		} catch (error) {
+			console.error("Error during login:", error);
+			alert("Verkkovirhe. Tarkista yhteytesi ja yritä uudelleen.");
+		}
+	});
+}
+
+// Update UI when user is logged in
+function updateUIForLoggedInUser(user) {
+	// Hide login/register buttons
+	const loginBtn = document.getElementById("loginBtn");
+	const registerBtn = document.getElementById("registerBtn");
+	if (loginBtn) loginBtn.style.display = 'none';
+	if (registerBtn) registerBtn.style.display = 'none';
+	
+	// Show user info in header
+	const headerButtons = document.querySelector('.header-buttons');
+	if (headerButtons) {
+		const userInfo = document.createElement('div');
+		userInfo.className = 'user-info';
+		userInfo.innerHTML = `
+			<span style="margin-right: 1rem;">Kirjautunut: ${user.email}</span>
+			<button id="logoutBtn" class="btn-secondary">Kirjaudu ulos</button>
+		`;
+		headerButtons.appendChild(userInfo);
+		
+		// Add logout handler
+		document.getElementById('logoutBtn').addEventListener('click', logout);
+	}
+	
+	// Remove spin limitations for logged in users
+	sessionStorage.setItem('unlimitedSpins', 'true');
+}
+
+// Logout function
+function logout() {
+	sessionStorage.removeItem('user');
+	sessionStorage.removeItem('isLoggedIn');
+	sessionStorage.removeItem('unlimitedSpins');
+	location.reload();
+}
+
+// Check if user is already logged in on page load
+window.addEventListener('load', () => {
+	const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+	if (isLoggedIn === 'true') {
+		const user = JSON.parse(sessionStorage.getItem('user'));
+		updateUIForLoggedInUser(user);
 	}
 });
 
